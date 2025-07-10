@@ -68,4 +68,12 @@ _Short summary of ROS2 and its purpose._
 ---
 
 ## Personal Notes
-- _Add your own notes, issues, and solutions here._
+### ROS2 Setup
+- mkdir ros2_ws/src
+- cd ros2_ws
+- colcon build
+- source ~/ros2_ws/install/setup.bash
+
+### Create a ROS2 Python Package
+- cd ros2_ws/src
+- ros2 pkg create my_robot_pkg --build-type ament_python --dependencies rclpy 
