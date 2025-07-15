@@ -1,4 +1,4 @@
-# RTABMap Integration with ASCAM HP60C RGBD Camera
+# RTABMap Integration with ASCAM HP60C RGBD Camera & LDROBOT D500 LiDAR Kit
 
 A complete guide for integrating the ASCAM HP60C RGBD camera with RTABMap for real-time SLAM (Simultaneous Localization and Mapping) in ROS 2.
 
@@ -46,25 +46,26 @@ sudo apt update
 sudo apt install ros-jazzy-desktop -y
 ```
 
-### 2. RTABMap Installation
+### 2. ASCAM Camera Driver
 
-```bash
-# Install RTABMap and dependencies
-sudo apt install ros-jazzy-rtabmap-ros -y
-sudo apt install ros-jazzy-rtabmap-msgs -y
-sudo apt install ros-jazzy-rtabmap-conversions -y
-sudo apt install ros-jazzy-rtabmap-viz -y
-```
-
-### 3. ASCAM Camera Driver
-
-Ensure your ASCAM HP60C camera driver is installed and working in a separate workspace:
+Ensure your ASCAM HP60C camera driver is installed and working:
 ```bash
 # Example workspace structure
-~/ascam_ros2_ws/
+~/ros2_ws/
 └── src/
     └── ascamera/
 ```
+
+### 3. LDLiDAR Driver
+
+Ensure your LDROBOT D500 LiDAR driver is installed and working:
+```bash
+# Example workspace structure
+~/ros2_ws/
+└── src/
+    └── ldrobot-liadr-ros2/
+```
+
 
 ## 🔧 Installation
 
@@ -73,18 +74,36 @@ Ensure your ASCAM HP60C camera driver is installed and working in a separate wor
 ```bash
 # Create RTABMap workspace
 mkdir -p ~/rtabmap_ros2_ws/src
-cd ~/rtabmap_ros2_ws/src
+cd ~/rtabmap_ros2_ws
 
-# Clone RTABMap ROS packages
-git clone https://github.com/introlab/rtabmap_ros.git
+Cleanup binaries
+sudo apt remove ros-$ROS_DISTRO-rtabmap* -y
+
+# RTABMap ROS packages
+git clone https://github.com/introlab/rtabmap.git src/rtabmap
+git clone --branch ros2 https://github.com/introlab/rtabmap_ros.git src/rtabmap_ros
 ```
 
-### Step 2: Build Base RTABMap
+### Step 2: Import Custom Files
+
+```bash
+# Clone custom files for integration
+cd ~
+git clone https://github.com/dhruvel/rtabmap_ros2_ws.git dhruvel_ros2_ws
+mkdir ~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_demos/scripts
+mv dhruvel_ros2_ws/custom_files/my_robot_mapping.launch.py ~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_demos/launch && mv dhruvel_ros2_ws/custom_files/test_sensors.py ~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_demos/scripts
+# Cleanup temp directory
+rm -fr ~/dhruvel_ros2_ws
+```
+
+
+### Step 3: Build Workspace
 
 ```bash
 cd ~/rtabmap_ros2_ws
-source /opt/ros/jazzy/setup.bash
-colcon build --symlink-install
+rosdep update && rosdep install --from-paths src --ignore-src -r -y
+export MAKEFLAGS="-j6" # Can be ignored if you have a lot of RAM (>16GB)
+colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 ```
 
 ### Step 3: Create Integration Files
