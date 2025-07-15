@@ -450,27 +450,31 @@ colcon build --packages-select rtabmap_examples --allow-overriding rtabmap_examp
 
 ## 🚀 Usage
 
-### Quick Start (Recommended)
-
-```bash
-# Launch everything at once
-~/rtabmap_ascam_launcher.sh
-```
-
-### Manual Launch (Two Terminals)
+### Manual Launch (Five Terminals)
 
 **Terminal 1 - Camera:**
 ```bash
-cd ~/ascam_ros2_ws
-source install/setup.bash
 ros2 launch ascamera hp60c.launch.py
 ```
-
-**Terminal 2 - RTABMap:**
+**Terminal 2 - LiDAR:**
 ```bash
-cd ~/rtabmap_ros2_ws
-source install/setup.bash
-ros2 launch rtabmap_examples ascam_hp60c.launch.py
+ros2 launch ldlidar_node ldlidar_bringup.launch.py
+```
+
+**Terminal 3 - Configure LiDAR:**
+```bash
+ros2 lifecycle set /ldlidar_node configure
+ros2 lifecycle set /ldlidar_node activate
+```
+
+**Terminal 4 - RTABMap:**
+```bash
+cd /home/dhruvel/rtabmap_ros2_ws && source install/setup.bash && ros2 launch rtabmap_demos my_robot_mapping.launch.py rviz:=true rtabmap_viz:=true
+```
+
+**Terminal 5 - Configure RTABMap:**
+```bash
+ros2 run tf2_ros static_transform_publisher 0 0 0.1 0 0 0 ldlidar_base ascamera_hp60c_camera_link_0 &
 ```
 
 ### Launch with Custom Parameters
