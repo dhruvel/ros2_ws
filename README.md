@@ -73,8 +73,8 @@ Ensure your LDROBOT D500 LiDAR driver is installed and working:
 
 ```bash
 # Create RTABMap workspace
-mkdir -p ~/rtabmap_ros2_ws/src
-cd ~/rtabmap_ros2_ws
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws
 
 Cleanup binaries
 sudo apt remove ros-$ROS_DISTRO-rtabmap* -y
@@ -89,9 +89,9 @@ git clone --branch ros2 https://github.com/introlab/rtabmap_ros.git src/rtabmap_
 ```bash
 # Clone custom files for integration
 cd ~
-git clone https://github.com/dhruvel/rtabmap_ros2_ws.git dhruvel_ros2_ws
-mkdir ~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_demos/scripts
-mv dhruvel_ros2_ws/custom_files/my_robot_mapping.launch.py ~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_demos/launch && mv dhruvel_ros2_ws/custom_files/test_sensors.py ~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_demos/scripts
+git clone https://github.com/dhruvel/ros2_ws.git dhruvel_ros2_ws
+mkdir ~/ros2_ws/src/rtabmap_ros/rtabmap_demos/scripts
+mv dhruvel_ros2_ws/custom_files/my_robot_mapping.launch.py ~/ros2_ws/src/rtabmap_ros/rtabmap_demos/launch && mv dhruvel_ros2_ws/custom_files/test_sensors.py ~/ros2_ws/src/rtabmap_ros/rtabmap_demos/scripts
 # Cleanup temp directory
 rm -fr ~/dhruvel_ros2_ws
 ```
@@ -100,7 +100,7 @@ rm -fr ~/dhruvel_ros2_ws
 ### Step 3: Build Workspace
 
 ```bash
-cd ~/rtabmap_ros2_ws
+cd ~/ros2_ws
 rosdep update && rosdep install --from-paths src --ignore-src -r -y
 export MAKEFLAGS="-j6" # Can be ignored if you have a lot of RAM (>16GB)
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
@@ -114,7 +114,7 @@ Create the following files in your RTABMap workspace:
 
 ### 1. RTABMap Launch File
 
-Create: `~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_examples/launch/ascam_hp60c.launch.py`
+Create: `~/ros2_ws/src/rtabmap_ros/rtabmap_examples/launch/ascam_hp60c.launch.py`
 
 ```python
 # Requirements:
@@ -205,7 +205,7 @@ def generate_launch_description():
 
 ### 2. RTABMap Configuration File
 
-Create: `~/rtabmap_ros2_ws/src/rtabmap_ros/rtabmap_examples/config/ascam_hp60c.yaml`
+Create: `~/ros2_ws/src/rtabmap_ros/rtabmap_examples/config/ascam_hp60c.yaml`
 
 ```yaml
 # RTABMap configuration parameters optimized for ASCAM HP60C
@@ -469,7 +469,7 @@ ros2 lifecycle set /ldlidar_node activate
 
 **Terminal 4 - RTABMap:**
 ```bash
-cd /home/dhruvel/rtabmap_ros2_ws && source install/setup.bash && ros2 launch rtabmap_demos my_robot_mapping.launch.py rviz:=true rtabmap_viz:=true
+cd ~/ros2_ws && source install/setup.bash && ros2 launch rtabmap_demos my_robot_mapping.launch.py rviz:=true rtabmap_viz:=true
 ```
 
 **Terminal 5 - Configure RTABMap:**
